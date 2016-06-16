@@ -4,22 +4,22 @@ from os import path
 
 
 class PowerSpectrum:
-    def __init__(self, start_w: float = 280.0, stop_w: float = 4000.0, spectra: str = "AM1.5G"):
+    def __init__(self, start_w: float = 280.0, stop_w: float = 4000.0, spectrum_name: str = "AM1.5G"):
         """
-        Initilizer for PowerSpectrum class. Builds custom spectrum if variables are passed when creating instance.
+        Initializer for PowerSpectrum class. Builds custom spectrum if variables are passed when creating object.
         :param start_w: shortest wavelength in nanometers
         :param stop_w: longest wavelength in nanometers
-        :param spectra: the name of the spectrum you want to use. AM1.5G is most popular and is the ASTMG173-03
+        :param spectrum_name: the name of the spectrum you want to use. AM1.5G is most common and is the ASTMG173-03
         global tilt standard,
-        the AM1.5D is the direct+circumsolar standard,
-        the AM0Etr spectrum is a non-standard zero air-mass spectrum -- Please compare to the ASTM E490 standard
+        AM1.5D is the direct+circumsolar standard,
+        AM0Etr spectrum is a non-standard zero air-mass spectrum -- Please compare to the ASTM E490 standard
         :return:
         """
         # the first column should be the wavelength in nanometers, the second is the tilt power density/nm in
         # W/(m**2 nm) = J s^-1 m^-2 nm^-1 = C V m^-2 nm^-1
-        spectras = {"AM0Etr": 1, "AM1.5G": 2, "AM1.5D": 3}
+        spectra = {"AM0Etr": 1, "AM1.5G": 2, "AM1.5D": 3}
         self.spectrum = np.genfromtxt(path.join(path.dirname(__file__), './ASTMG173.csv'), delimiter=",",
-                                      skip_header=2)[:, [0, spectras[spectra]]]
+                                      skip_header=2)[:, [0, spectra[spectrum_name]]]
         self.start_w = start_w
         self.stop_w = stop_w
         # build custom spectrum if necessary
@@ -53,7 +53,7 @@ class PowerSpectrum:
         # See if the wavelength(s) is out of bounds, throw error
         for w in wavelengths:
             if not lowerb <= w <= upperb:
-                print("Wavelength %0.2f nm out of spectra bounds" % w)
+                print("Wavelength %0.2f nm out of spectrum bounds." % w)
                 if w < lowerb:
                     raise IndexError("Please use the lower bound of %0.2f nm." % lowerb)
                 elif w > upperb:
